@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Test Kvartira</string>
+    <string name="choose_city">Выберете город</string>
 </resources>

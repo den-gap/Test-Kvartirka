@@ -1,5 +1,6 @@
 package com.example.testkvartira.api
 
+import com.example.testkvartira.pojo.RootCountry
 import com.example.testkvartira.pojo.RootFlats
 import io.reactivex.rxjava3.core.Observable
 import retrofit2.http.GET
@@ -12,18 +13,20 @@ interface KvartirkaApiService {
         @Query(OFFSET) offset: Int = 0,
         @Query(DEVICE_SCREEN_WIDTH) device_screen_width: Int = 1920,
         @Query(CURRENCY_ID) currency_id: Int = 643,
-        @Query(POINT_LNG) point_lng: Double = 37.6082298810962,
-        @Query(POINT_LAT) point_lat: Double = 55.7625506743728,
         @Query(CITY_ID) city_id: Int = 18
     ): Observable<RootFlats>
 
-    @GET(Companion.GET_FLATS)
+    @GET(GET_FLATS)
     fun getFlatById(
         @Query(FLAT_IDS) flatIds: String
     ): Observable<RootFlats>
 
+    @GET(GET_COUNTRY)
+    fun getCountry(): Observable<RootCountry>
+
     companion object {
         private const val GET_FLATS = "flats"
+        private const val GET_COUNTRY = "country"
         private const val OFFSET = "offset"
         private const val DEVICE_SCREEN_WIDTH = "device_screen_width"
         private const val CURRENCY_ID = "currency_id"
