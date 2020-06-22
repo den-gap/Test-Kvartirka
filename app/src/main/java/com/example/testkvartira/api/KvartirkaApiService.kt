@@ -11,9 +11,17 @@ interface KvartirkaApiService {
     @GET(GET_FLATS)
     fun getFlats(
         @Query(OFFSET) offset: Int = 0,
-        @Query(DEVICE_SCREEN_WIDTH) device_screen_width: Int = 1920,
         @Query(CURRENCY_ID) currency_id: Int = 643,
-        @Query(CITY_ID) city_id: Int = 18
+        @Query(CITY_ID) city_id: Int
+    ): Observable<RootFlats>
+
+    @GET(GET_FLATS)
+    fun getFlats(
+        @Query(OFFSET) offset: Int = 0,
+        @Query(CURRENCY_ID) currency_id: Int = 643,
+        @Query(CITY_ID) city_id: Int = 18,
+        @Query(POINT_LNG) point_lng: Double,
+        @Query(POINT_LAT) point_lat: Double
     ): Observable<RootFlats>
 
     @GET(GET_FLATS)

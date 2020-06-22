@@ -14,7 +14,11 @@ class FlatListViewModel : ViewModel() {
     private val compositeDisposable = CompositeDisposable()
     var flatList: MutableLiveData<List<Flat>> = MutableLiveData()
     var cityList: MutableLiveData<List<City>> = MutableLiveData()
-    var defaultCityName: String = "Москва"
+
+    var userCityId = 18
+
+    val defaultLon = 37.6082298810962
+    val defaultLat = 55.7625506743728
 
 
     init {
@@ -37,17 +41,53 @@ class FlatListViewModel : ViewModel() {
         compositeDisposable.add(disposable)
     }
 
-    fun loadFlats(cityId: Int) {
-        val disposable = KvartirkaApiFactory.apiService.getFlats(city_id = cityId)
+    fun initUserCity(lat: Double, lon: Double) {
+        val disposable = KvartirkaApiFactory.apiService.getFlats(
+            city_id = userCityId,
+            point_lat = lat,
+            point_lng = lon
+        )
             .map { it.flats }
             .subscribeOn(Schedulers.io())
             .subscribe({
                 it?.let { flats ->
+                    Log.d("LOADING_FLATS", flats.size.toString())
+                    userCityId = flats.first().cityId ?: 18
+                    Log.d("LOADING_FLATS", "CityId: $userCityId")
                     flatList.postValue(flats)
                 }
             }, {
                 Log.d("LOADING_FLATS", it.message)
             })
+        compositeDisposable.add(disposable)
+    }
+
+    fun loadFlats(
+        cityId: Int,
+        lat: Double,
+        lon: Double
+    ) {
+        Log.d("LOADING_FLATS", "Begin loading...")
+        val disposable =
+            if (lat != defaultLat && lon != defaultLon && cityId == userCityId) {
+                KvartirkaApiFactory.apiService.getFlats(
+                    city_id = cityId,
+                    point_lat = lat,
+                    point_lng = lon
+                )
+            } else {
+                KvartirkaApiFactory.apiService.getFlats(city_id = cityId)
+            }
+                .map { it.flats }
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it?.let { flats ->
+                        Log.d("LOADING_FLATS", flats.size.toString())
+                        flatList.postValue(flats)
+                    }
+                }, {
+                    Log.d("LOADING_FLATS", it.message)
+                })
         compositeDisposable.add(disposable)
     }
 
